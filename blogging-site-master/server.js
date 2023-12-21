@@ -16,6 +16,7 @@ app.get('/editor', (req, res) => {
     res.sendFile(path.join(initial_path, "editor.html"));
 })
 
+
 // upload link
 app.post('/upload', (req, res) => {
     let file = req.files.image;
@@ -37,9 +38,13 @@ app.post('/upload', (req, res) => {
     })
 })
 
+app.get("/admin",(req, res) => {
+    res.sendFile(path.join(initial_path, "dashboard.html"));
+})
 app.get("/:blog", (req, res) => {
     res.sendFile(path.join(initial_path, "blog.html"));
 })
+
 
 app.use((req, res) => {
     res.json("404");
