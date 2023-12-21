@@ -1,8 +1,12 @@
-let blogId = decodeURI(location.pathname.split("/").pop());
+import { db } from "./firebase.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-let docRef = db.collection("blogs").doc(blogId);
 
-docRef.get().then((doc) => {
+const blogId = decodeURI(location.pathname.split("/").pop());
+
+
+const docRef = doc(db, "blogs", blogId);
+getDoc(docRef).then((doc) => {
     if(doc.exists){
         setupBlog(doc.data());
     } else{

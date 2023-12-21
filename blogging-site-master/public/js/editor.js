@@ -1,23 +1,9 @@
-// import { initializeApp } from "firebase/app";
-// import { getFirestore } from "firebase/firestore";
-let firebaseConfig = {
-    
-        apiKey: "AIzaSyC9bKfnAcpX4PvuOi_4L0CEenkUEqZsjHo",
-        authDomain: "blogging-website-ankit.firebaseapp.com",
-        projectId: "blogging-website-ankit",
-        storageBucket: "blogging-website-ankit.appspot.com",
-        messagingSenderId: "23365300631",
-        appId: "1:23365300631:web:9ca8d09c22eeb84b2014d2"
-      
-    
-};
-const app = initializeApp(firebaseConfig);
-firebase.initializeApp(firebaseConfig);
-let db = firebase.firestore();
+import { addDoc, collection, getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { db } from "./firebase.js";
 
 
 
-// const db = getFirestore(app);
+
 const blogTitleField = document.querySelector('.title');
 const articleFeild = document.querySelector('.article');
 
@@ -39,7 +25,7 @@ uploadInput.addEventListener('change', () => {
 
 const uploadImage = (uploadFile, uploadType) => {
     const [file] = uploadFile.files;
-    if(file && file.type.includes("image")){
+    if (file && file.type.includes("image")) {
         const formdata = new FormData();
         formdata.append('image', file);
 
@@ -47,15 +33,15 @@ const uploadImage = (uploadFile, uploadType) => {
             method: 'post',
             body: formdata
         }).then(res => res.json())
-        .then(data => {
-            if(uploadType == "image"){
-                addImage(data, file.name);
-            } else{
-                bannerPath = `${location.origin}/${data}`;
-                banner.style.backgroundImage = `url("${bannerPath}")`;
-            }
-        })
-    } else{
+            .then(data => {
+                if (uploadType == "image") {
+                    addImage(data, file.name);
+                } else {
+                    bannerPath = `${location.origin}/${data}`;
+                    banner.style.backgroundImage = `url("${bannerPath}")`;
+                }
+            })
+    } else {
         alert("upload Image only");
     }
 }
@@ -69,12 +55,12 @@ const addImage = (imagepath, alt) => {
 let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 publishBtn.addEventListener('click', () => {
-    if(articleFeild.value.length && blogTitleField.value.length){
+    if (articleFeild.value.length && blogTitleField.value.length) {
         // generating id
         let letters = 'abcdefghijklmnopqrstuvwxyz';
         let blogTitle = blogTitleField.value.split(" ").join("-");
         let id = '';
-        for(let i = 0; i < 4; i++){
+        for (let i = 0; i < 4; i++) {
             id += letters[Math.floor(Math.random() * letters.length)];
         }
 
@@ -83,17 +69,17 @@ publishBtn.addEventListener('click', () => {
         let date = new Date(); // for published at info
 
         //access firstore with db variable;
-        db.collection("blogs").doc(docName).set({
+        addDoc(collection(db, "blogs"), {
             title: blogTitleField.value,
             article: articleFeild.value,
             bannerImage: bannerPath,
             publishedAt: `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`
         })
-        .then(() => {
-            location.href = `/${docName}`;
-        })
-        .catch((err) => {
-            console.error(err);
-        })
+            .then(() => {
+                location.href = `/${docName}`;
+            })
+            .catch((err) => {
+                console.error(err);
+            })
     }
 })

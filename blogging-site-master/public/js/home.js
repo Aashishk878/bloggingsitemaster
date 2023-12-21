@@ -1,6 +1,9 @@
+import { getDocs, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { db } from "./firebase.js";
+
 const blogSection = document.querySelector('.blogs-section');
 
-db.collection("blogs").get().then((blogs) => {
+getDocs(collection(db, "blogs")).then((blogs) => {
     blogs.forEach(blog => {
         if(blog.id != decodeURI(location.pathname.split("/").pop())){
             createBlog(blog);
